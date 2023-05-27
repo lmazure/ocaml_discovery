@@ -8,6 +8,18 @@ type color = Green | Blue;;
 *)
 type cell = color * color list * color list * color list;;
 
+let get_color_of cell  = match cell with
+  | ( color, _, _, _) -> color;;
+
+let get_left_of cell  = match cell with
+  | ( _, left, _, _) -> left;;
+
+let get_diag_of cell  = match cell with
+  | ( _, _, diag, _) -> diag;;
+
+let get_above_of cell  = match cell with
+  | ( _, _, _, above) -> above;;
+
 let rec can_be_of_color color l1 l2 l3 =
 match l1 with
 | [] -> true
@@ -26,8 +38,11 @@ let color_to_string color =
   | Green -> "G"
   | Blue -> "B";;
 
+let cell_to_string cell = match cell with
+  | ( color, _, _, _) -> color_to_string color;;
+
 let display_line line = 
-  List.iter ( fun x -> x |> color_to_string |> print_string ) line;;
+  List.iter ( fun x -> x |> cell_to_string |> print_string ) line;;
 
 let display column row = 
   display_line column;
@@ -36,21 +51,26 @@ let display column row =
   print_newline ();;
 
 let rec add_column last_column last_row =
-  add_column_cell last_column last_row [ Green ] ; add_column_cell last_column last_row [ Blue ]
+  add_column_cell last_column last_row [ (Green, [], [], []) ] ; add_column_cell last_column last_row [ (Blue, [], [], []) ]
 and
 add_column_cell last_column_remainder last_row new_column =
   match last_column_remainder with
-  | [] -> ( add_row [ Green ] last_row ; add_row [ Blue ] last_row )
-  | [last] -> ( add_row ( Green :: new_column ) last_row ; add_row ( Blue :: new_column ) last_row )
-  | h::t -> ( add_column_cell t last_row ( Green :: new_column ) ; add_column_cell t last_row ( Blue :: new_column ) )
+  | [] -> ( add_row [ (Green, [], [], []) ] last_row ;
+            add_row [ (Blue, [], [], []) ] last_row )
+  | [last] -> ( add_row ( (Green, [], [], []) :: new_column ) last_row;
+                add_row ( (Blue, [], [], []) :: new_column ) last_row )
+  | h::t -> ( add_column_cell t last_row ( (Green, [], [], []) :: new_column ) ;
+              add_column_cell t last_row ( (Blue, [], [], []) :: new_column ) )
 and
 add_row last_column last_row =
-  add_row_cell last_column last_row [ Green ] ; add_row_cell last_column last_row [ Blue ]
+  add_row_cell last_column last_row [ (Green, [], [], []) ] ;
+  add_row_cell last_column last_row [ (Blue, [], [], []) ]
 and
 add_row_cell last_column last_row_remainder new_row =
   match last_row_remainder with
   | [] -> ( display last_column new_row )
-  | h::t -> ( add_row_cell last_column t ( Green :: new_row ) ; add_row_cell last_column t ( Blue :: new_row ) )
+  | h::t -> ( add_row_cell last_column t ( (Green, [], [], []) :: new_row ) ;
+              add_row_cell last_column t ( (Blue, [], [], []) :: new_row ) )
 ;;
 
-add_column [] [Green];;
+add_column [ (Green, [], [], []) ] [ (Green, [], [], []); (Green, [], [], []) ];;
