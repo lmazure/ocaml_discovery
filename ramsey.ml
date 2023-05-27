@@ -40,7 +40,7 @@ let rec add_column last_column last_row =
 and
 add_column_cell last_column_remainder last_row new_column =
   match last_column_remainder with
-  | [] -> print_string "!! BUG !!"
+  | [] -> ( add_row [ Green ] last_row ; add_row [ Blue ] last_row )
   | [last] -> ( add_row ( Green :: new_column ) last_row ; add_row ( Blue :: new_column ) last_row )
   | h::t -> ( add_column_cell t last_row ( Green :: new_column ) ; add_column_cell t last_row ( Blue :: new_column ) )
 and
@@ -53,4 +53,4 @@ add_row_cell last_column last_row_remainder new_row =
   | h::t -> ( add_row_cell last_column t ( Green :: new_row ) ; add_row_cell last_column t ( Blue :: new_row ) )
 ;;
 
-add_column [Green] [Green;Blue];;
+add_column [] [Green];;
