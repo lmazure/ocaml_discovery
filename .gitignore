@@ -1,3 +1,9 @@
 *.exe
 *.cmi
 *.cmo
+*.opam
+
+_build/
+bin/
+lib/
+test/
