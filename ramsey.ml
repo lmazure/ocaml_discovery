@@ -50,7 +50,30 @@ let display column row =
   display_line row;
   print_newline ();;
 
+let rec display_whole_color_row row =
+  match row with
+  | [] -> print_newline ()
+  | h::t -> begin
+              display_whole_color_row t;
+              h |> color_to_string |> print_string
+            end;;
 
+let rec display_whole_row row =
+  match row with
+  | [] -> print_newline ()
+  | h::t -> begin
+              display_whole_row t;
+              h |> cell_to_string |> print_string
+            end;;
+
+let rec display_whole last_column last_row =
+  match last_column with
+  | [] -> display_whole_row last_row
+  | h::t -> begin
+              display_whole t;
+              h |> get_left_of_cell |> display_whole_color_row
+            end;;
+  
 let build_new_cell color left_cell diag_cell above_cell = 
   (color,
    ((get_color_of_cell left_cell)::(get_left_of_cell left_cell)),
@@ -58,44 +81,48 @@ let build_new_cell color left_cell diag_cell above_cell =
    ((get_color_of_cell above_cell)::(get_above_of_cell above_cell)));;
   
 let rec add_column last_column last_row =
-  print_newline();
-  print_endline "add_column";
-  print_string  "last_column ";        display_line last_column;         print_newline() ;
-  print_string  "last_row ";           display_line last_row;            print_newline() ;
+  (* print_newline();
+     print_endline "add_column";
+     print_string  "last_column ";        display_line last_column;         print_newline() ;
+     print_string  "last_row ";           display_line last_row;            print_newline() ; *)
   add_column_cell last_column last_row [ (Green, [], [], []) ] ;
   add_column_cell last_column last_row [ (Blue, [], [], []) ]
 and
 add_column_cell last_column_remainder last_row new_column =
-  print_newline();
-  print_endline "add_column_cell";
-  print_string  "last_column_remainder "; display_line last_column_remainder; print_newline() ;
-  print_string  "last_row ";              display_line last_row;              print_newline() ;
-  print_string  "new_column ";            display_line new_column;            print_newline() ;
+  (* print_newline();
+     print_endline "add_column_cell";
+     print_string  "last_column_remainder "; display_line last_column_remainder; print_newline() ;
+     print_string  "last_row ";              display_line last_row;              print_newline() ;
+     print_string  "new_column ";            display_line new_column;            print_newline() ; *)
   match last_column_remainder with
   | [] -> ( add_row [ (Green, [], [], []) ] last_row ;
             add_row [ (Blue,  [], [], []) ] last_row )
   | [last] -> ( add_row ( (build_new_cell Green (List.hd last_row) last (List.hd new_column)) :: new_column ) last_row; 
-                add_row ( (build_new_cell Blue  (List.hd last_row) last (List.hd new_column)) :: new_column ) last_row )
+                add_row ( (build_new_cell Blue  (List.hd last_row) last (List.hd new_column)) :: new_column ) last_row  )
   | h::((i::t) as rest) -> ( add_column_cell rest last_row ( (build_new_cell Green i h (List.hd new_column)) :: new_column ) ;
                              add_column_cell rest last_row ( (build_new_cell Blue  i h (List.hd new_column)) :: new_column ) )
 and
 add_row last_column last_row =
-  print_newline();
-  print_endline "add_row";
-  print_string  "last_column ";        display_line last_column;         print_newline() ;
-  print_string  "last_row ";           display_line last_row;            print_newline() ;
+  (* print_newline();
+     print_endline "add_row";
+     print_string  "last_column ";        display_line last_column;         print_newline() ;
+     print_string  "last_row ";           display_line last_row;            print_newline() ; *)
   add_row_cell last_column last_row [ (Green, [], [], ((last_row |> List.hd |> get_color_of_cell)::(last_row |> List.hd |> get_above_of_cell))) ] ;
   add_row_cell last_column last_row [ (Blue,  [], [], ((last_row |> List.hd |> get_color_of_cell)::(last_row |> List.hd |> get_above_of_cell))) ]
 and
 add_row_cell last_column last_row_remainder new_row =
-  print_newline();
-  print_endline "add_row_cell";
-  print_string  "last_column ";        display_line last_column;         print_newline() ;
-  print_string  "last_row_remainder "; display_line last_row_remainder;  print_newline() ;
-  print_string  "new_row ";            display_line new_row ;            print_newline() ;
+  (* print_newline();
+     print_endline "add_row_cell";
+     print_string  "last_column ";        display_line last_column;         print_newline() ;
+     print_string  "last_row_remainder "; display_line last_row_remainder;  print_newline() ;
+     print_string  "new_row ";            display_line new_row ;            print_newline() ; *)
   match last_row_remainder with
   | [] -> if ((List.length last_column) > 2) then
-              ( display last_column new_row )
+              begin
+                print_endline ">>>";
+                display_whole last_column new_row;
+                print_endline "<<<"
+              end
             else
               add_column last_column new_row
   | [last] -> ( add_row_cell last_column [] ( (build_new_cell Green (new_row |> List.hd) last (last_column |> List.hd)) :: new_row ) ;
