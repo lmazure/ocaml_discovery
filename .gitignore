@@ -4,6 +4,3 @@
 *.opam
 
 _build/
-bin/
-lib/
-test/
