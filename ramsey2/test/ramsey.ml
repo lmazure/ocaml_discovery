@@ -49,8 +49,16 @@ let test2 = "column addition" >::: [
                                    end);
 ]
 
-
+let test3 = "blabla" >::: [
+  "blabla" >:: (fun _ -> begin
+                                      assert_equal ([], []) ( generate_data_from_string "B" )
+                                                   ~printer:column_row_pair_to_string
+                                    end);
+]
 
 
 let _ = run_test_tt_main test1
 let _ = run_test_tt_main test2
+let _ = run_test_tt_main test3
+
+
