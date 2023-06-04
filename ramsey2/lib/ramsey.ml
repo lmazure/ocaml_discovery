@@ -110,3 +110,34 @@ let add_column (consumer: cell list -> cell list -> unit) (last_column: cell lis
               end
           end
   | _ -> ()
+
+  (* --------------------------------------------------- *)
+
+  type cell2 = { color: color; left: cell2 option; diag: cell2 option; above: cell2 option }
+
+  let get_cell_option_color (cell: cell2 option) : color option(Option.map  = Option.map (fun x -> x.color) cell
+
+  let cell)2_to_debug_string cell =
+    "[color=" 
+    ^ (color_to_string cell.color )
+    ^ ",left="
+    ^ (Option.value (Option.map color_to_string (get_cell_option_color cell.left)) "")
+    ^ ",diag="
+    ^ (Option.value (Option.map color_to_string (get_cell_option_color cell.diag)) "")
+    ^ ",above="
+    ^ (Option.value (Option.map color_to_string (get_cell_option_color cell.above)) "")
+    ^ "]"
+
+    let rec generate2_data_from_strings (strings: string list) : ( cell list * cell list ) =
+      match strings with
+      | [] -> []
+      | [last] ->  { color = (string_to_color last);  }
+      | h::t -> begin
+                  let (before_last_column, _) = (generate_data_from_strings t) in
+                  let new_last_column = (before_last_column @  [ { color = (t |> last_list_element |> explode_string |> last_list_element |> char_to_color); left = []; diag = []; above = [] }  ]) in
+                  let new_last_row = build_last_row (explode_string h) in
+                  (new_last_column, new_last_row)
+                end
+    
+    let generate2_data_from_string (str: string) : ( cell list * cell list) =
+      generate2_data_from_strings (String.split_on_char '|' str)
