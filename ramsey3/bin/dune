@@ -1,0 +1,4 @@
+(executable
+ (public_name ramsey3)
+ (name main)
+ (libraries ramsey3))

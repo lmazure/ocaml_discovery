@@ -33,9 +33,9 @@ let rec insert_values_in_tree (l: int list) (tree: node): node =
 let build_tree (l: int list): node = insert_values_in_tree l Nil
 
 
-let _ = print_flat_tree (build_tree [])
-let _ = print_flat_tree (build_tree [1])
-let _ = print_flat_tree (build_tree [1;2])
-let _ = print_flat_tree (build_tree [2;1])
-let _ = print_flat_tree (build_tree [3;1;2])
-let _ = print_flat_tree (build_tree [3;1;2;7;9;4;3;5;8])
+let _ = print_tree (build_tree [])
+let _ = print_tree (build_tree [1])
+let _ = print_tree (build_tree [1;2])
+let _ = print_tree (build_tree [2;1])
+let _ = print_tree (build_tree [3;1;2])
+let _ = print_tree (build_tree [3;1;2;7;9;4;3;5;8])
