@@ -35,8 +35,7 @@ let add_one_row_from_string (str: string) (previous_row: cell): cell =
                   | Nil -> Cell { color = (char_to_color h); left = (accumulate t Nil); above = Nil }
                   | Cell c -> Cell { color = (char_to_color h); left = (accumulate t (c.left)); above = Cell c }
                 end      
-    in
-      accumulate l1 previous_row
+    in accumulate l1 previous_row
 
 let build_from_string (s: string) : cell =
   let rec loop (l: string list) (c: cell) : cell =
@@ -46,14 +45,12 @@ let build_from_string (s: string) : cell =
   in loop (String.split_on_char '|' s) Nil
 
   let add_column (c: cell) : cell list =
-    let rec addc (cell_prev_col: cell) : cell list = 
+    let rec add (cell_prev_col: cell) : cell list = 
       match cell_prev_col with
       | Nil -> []
-      | Cell pc -> if (pc.above = Nil) then
-                     [ Cell { color = Green; left = Cell pc; above = Nil };
-                       Cell { color = Blue;  left = Cell pc; above = Nil }]
-                   else
-                     List.map (fun x -> Cell { color = Green; left = cell_prev_col; above = x }) (addc pc.above) @
-                     List.map (fun x -> Cell { color = Blue;  left = cell_prev_col; above = x }) (addc pc.above)
-    in
-      addc c
+      | Cell pc -> match pc.above with
+                   | Nil ->  [ Cell { color = Green; left = cell_prev_col; above = Nil };
+                               Cell { color = Blue;  left = cell_prev_col; above = Nil }]
+                   | Cell _ -> List.map (fun x -> Cell { color = Green; left = cell_prev_col; above = x }) (add pc.above) @
+                               List.map (fun x -> Cell { color = Blue;  left = cell_prev_col; above = x }) (add pc.above)
+    in add c
