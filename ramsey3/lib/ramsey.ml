@@ -24,7 +24,7 @@ let char_to_color str =
 *)
 type cell = Cell of { color: color; left: cell; above: cell } | Nil
 
-let generate_row_from_string (str: string) (previous_row: cell): cell =
+let add_one_row (str: string) (previous_row: cell): cell =
   let l1 = explode_string str
   in
     let rec accumulate (l2: char list) (r: cell) =
@@ -38,9 +38,9 @@ let generate_row_from_string (str: string) (previous_row: cell): cell =
     in
       accumulate l1 previous_row
 
-let rec generate2_data_from_strings (strs: string list) (cell: cell) : cell =
-  match strs with
-  | [] -> cell
-  | h::t -> generate2_data_from_strings t (generate_row_from_string h cell)
-
-let build_from_string (str: string) : cell = generate2_data_from_strings (String.split_on_char '|' str) Nil
+let build_from_string (str: string) : cell =
+  let rec loop (strs: string list) (cell: cell) : cell =
+    match strs with
+    | [] -> cell
+    | h::t -> loop t (add_one_row h cell)
+  in loop (String.split_on_char '|' str) Nil
