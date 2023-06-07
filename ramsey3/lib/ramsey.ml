@@ -24,7 +24,7 @@ let char_to_color str =
 *)
 type cell = Cell of { color: color; left: cell; above: cell } | Nil
 
-let add_one_row (str: string) (previous_row: cell): cell =
+let add_one_row_from_string (str: string) (previous_row: cell): cell =
   let l1 = explode_string str
   in
     let rec accumulate (l2: char list) (r: cell) =
@@ -38,9 +38,22 @@ let add_one_row (str: string) (previous_row: cell): cell =
     in
       accumulate l1 previous_row
 
-let build_from_string (str: string) : cell =
-  let rec loop (strs: string list) (cell: cell) : cell =
-    match strs with
-    | [] -> cell
-    | h::t -> loop t (add_one_row h cell)
-  in loop (String.split_on_char '|' str) Nil
+let build_from_string (s: string) : cell =
+  let rec loop (l: string list) (c: cell) : cell =
+    match l with
+    | [] -> c
+    | h::t -> loop t (add_one_row_from_string h c)
+  in loop (String.split_on_char '|' s) Nil
+
+  let add_column (c: cell) : cell list =
+    let rec addc (cell_prev_col: cell) : cell list = 
+      match cell_prev_col with
+      | Nil -> []
+      | Cell pc -> if (pc.above = Nil) then
+                     [ Cell { color = Green; left = Cell pc; above = Nil };
+                       Cell { color = Blue;  left = Cell pc; above = Nil }]
+                   else
+                     List.map (fun x -> Cell { color = Green; left = cell_prev_col; above = x }) (addc pc.above) @
+                     List.map (fun x -> Cell { color = Blue;  left = cell_prev_col; above = x }) (addc pc.above)
+    in
+      addc c
