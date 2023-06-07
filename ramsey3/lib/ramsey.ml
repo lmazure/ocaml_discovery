@@ -33,15 +33,14 @@ let generate_row_from_string (str: string) (previous_row: cell): cell =
       | h::t -> begin
                   match r with
                   | Nil -> Cell { color = (char_to_color h); left = (accumulate t Nil); above = Nil }
-                  | Cell c -> Cell { color = (char_to_color h); left = (accumulate t (c.left)); above = c.above }
+                  | Cell c -> Cell { color = (char_to_color h); left = (accumulate t (c.left)); above = Cell c }
                 end      
     in
       accumulate l1 previous_row
 
-let rec generate2_data_from_strings (strs: string list) : cell =
+let rec generate2_data_from_strings (strs: string list) (cell: cell) : cell =
   match strs with
-  | [] -> Nil
-  | [last] -> generate_row_from_string last Nil
-  | h::t -> generate_row_from_string h (generate2_data_from_strings t)
+  | [] -> cell
+  | h::t -> generate2_data_from_strings t (generate_row_from_string h cell)
 
-let build_from_string str: cell = generate2_data_from_strings (String.split_on_char '|' str)
+let build_from_string (str: string) : cell = generate2_data_from_strings (String.split_on_char '|' str) Nil
