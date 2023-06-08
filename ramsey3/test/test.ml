@@ -6,24 +6,23 @@ let c12 = Cell { color = Green; left = c11; above = Nil }
 let c13 = Cell { color = Blue;  left = c12; above = Nil }
 let c14 = Cell { color = Green; left = c13; above = Nil }
 let c15 = Cell { color = Blue;  left = c14; above = Nil }
-let c21 = Cell { color = Blue; left = Nil; above = c11 }
+let c21 = Cell { color = Blue;  left = Nil; above = c11 }
 let c22 = Cell { color = Green; left = c21; above = c12 }
 let c23 = Cell { color = Blue;  left = c22; above = c13 }
 let c24 = Cell { color = Green; left = c23; above = c14 }
-let c25 = Cell { color = Green;  left = c24; above = c15 }
+let c25 = Cell { color = Green; left = c24; above = c15 }
 let c31 = Cell { color = Green; left = Nil; above = c21 }
 let c41 = Cell { color = Green; left = Nil; above = c31 }
 
-let rec row_to_string (c: cell) : string =
-  match c with
-  | Nil -> ""
-  | Cell x -> (row_to_string x.left) ^ (color_to_string x.color)
+let d11 = Cell { color = Green; left = Nil; above = Nil }
+let d12 = Cell { color = Green; left = d11; above = Nil }
+let d13 = Cell { color = Green; left = d12; above = Nil }
+let d21 = Cell { color = Green; left = Nil; above = d11 }
+let d22 = Cell { color = Blue;  left = d21; above = d12 }
+let d23 = Cell { color = Blue;  left = d22; above = d13 }
+let d31 = Cell { color = Green; left = Nil; above = d21 }
+let d32 = Cell { color = Blue;  left = d31; above = d22 }
 
-let rec data_to_string (c: cell) : string =
-  match c with
-  | Nil -> ""
-  | Cell x -> let p = (data_to_string x.above) in
-                (if (p = "") then "" else (p ^ "|")) ^ (row_to_string c)
 
 let rec string_of_string_list l =
     match l with
@@ -36,7 +35,8 @@ let test0 = "string from data" >::: [
   "GGB" >:: ( fun _ -> assert_equal "GGB" (data_to_string c13) ~printer:Fun.id );
   "GGBGB" >:: ( fun _ -> assert_equal "GGBGB" (data_to_string c15) ~printer:Fun.id );
   "GGBGB|BGBGG" >:: ( fun _ -> assert_equal "GGBGB|BGBGG" (data_to_string c25) ~printer:Fun.id );
-  "G|B|G|G" >:: ( fun _ -> assert_equal "G|B|G|G" (data_to_string c41) ~printer:Fun.id )
+  "G|B|G|G" >:: ( fun _ -> assert_equal "G|B|G|G" (data_to_string c41) ~printer:Fun.id );
+  "G|G" >:: ( fun _ -> assert_equal "G|G" (data_to_string d21) ~printer:Fun.id )
 ]
 
 let test1 = "build from string" >::: [
@@ -60,7 +60,22 @@ let test3 = "add row" >::: [
   "GBB" >:: ( fun _ -> assert_equal [  "GBB|GGG"; "GBB|BGG"; "GBB|GBG"; "GBB|BBG"; "GBB|GGB"; "GBB|BGB"; "GBB|GBB"; "GBB|BBB" ] (List.map (fun x -> data_to_string x) (add_row (build_from_string "GBB"))) ~printer:string_of_string_list )
 ]
 
+let test4 = "is color acceptable" >::: [
+  "GG|Gg" >:: ( fun _ -> assert_equal false (is_color_acceptable Green d21 d11 d12) );
+  "GG|Gb" >:: ( fun _ -> assert_equal true  (is_color_acceptable Blue  d21 d11 d12) );
+  "GGG|GBB|GBb" >:: ( fun _ -> assert_equal false (is_color_acceptable Green d32 d22 d23) );
+  "GGG|GBB|GBb" >:: ( fun _ -> assert_equal false (is_color_acceptable Blue  d32 d22 d23) )
+]
+
+let test5 = "add acceptable column" >::: [
+  "G" >:: ( fun _ -> assert_equal [ "GG"; "GB"] (List.map (fun x -> data_to_string x) (add_acceptable_column (build_from_string "G"))) ~printer:string_of_string_list );
+  "GB" >:: ( fun _ -> assert_equal [ "GBG"; "GBB"] (List.map (fun x -> data_to_string x) (add_acceptable_column (build_from_string "GB"))) ~printer:string_of_string_list );
+  "G|B|B" >:: ( fun _ -> assert_equal [ "GG|BG|BG"; "GB|BG|BG"; "GG|BB|BG"; "GB|BB|BG"; "GG|BG|BB"; "GB|BG|BB" ] (List.map (fun x -> data_to_string x) (add_acceptable_column (build_from_string "G|B|B"))) ~printer:string_of_string_list )
+]  
+
 let _ = run_test_tt_main test0
 let _ = run_test_tt_main test1
 let _ = run_test_tt_main test2
 let _ = run_test_tt_main test3
+let _ = run_test_tt_main test4
+let _ = run_test_tt_main test5
