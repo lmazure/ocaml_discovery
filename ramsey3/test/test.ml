@@ -54,6 +54,13 @@ let test2 = "add column" >::: [
   "G|B|B" >:: ( fun _ -> assert_equal [ "GG|BG|BG"; "GB|BG|BG"; "GG|BB|BG"; "GB|BB|BG"; "GG|BG|BB"; "GB|BG|BB"; "GG|BB|BB"; "GB|BB|BB" ] (List.map (fun x -> data_to_string x) (add_column (build_from_string "G|B|B"))) ~printer:string_of_string_list )
 ]
 
+let test3 = "add row" >::: [
+  "G" >:: ( fun _ -> assert_equal [ "G|G"; "G|B"] (List.map (fun x -> data_to_string x) (add_row (build_from_string "G"))) ~printer:string_of_string_list );
+  "GB" >:: ( fun _ -> assert_equal [ "GB|GG"; "GB|BG"; "GB|GB"; "GB|BB" ] (List.map (fun x -> data_to_string x) (add_row (build_from_string "GB"))) ~printer:string_of_string_list );
+  "GBB" >:: ( fun _ -> assert_equal [  "GBB|GGG"; "GBB|BGG"; "GBB|GBG"; "GBB|BBG"; "GBB|GGB"; "GBB|BGB"; "GBB|GBB"; "GBB|BBB" ] (List.map (fun x -> data_to_string x) (add_row (build_from_string "GBB"))) ~printer:string_of_string_list )
+]
+
 let _ = run_test_tt_main test0
 let _ = run_test_tt_main test1
 let _ = run_test_tt_main test2
+let _ = run_test_tt_main test3

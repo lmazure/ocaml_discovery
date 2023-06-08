@@ -44,13 +44,25 @@ let build_from_string (s: string) : cell =
     | h::t -> loop t (add_one_row_from_string h c)
   in loop (String.split_on_char '|' s) Nil
 
-  let add_column (c: cell) : cell list =
-    let rec add (cell_prev_col: cell) : cell list = 
-      match cell_prev_col with
-      | Nil -> []
-      | Cell pc -> match pc.above with
-                   | Nil ->  [ Cell { color = Green; left = cell_prev_col; above = Nil };
-                               Cell { color = Blue;  left = cell_prev_col; above = Nil }]
-                   | Cell _ -> List.map (fun x -> Cell { color = Green; left = cell_prev_col; above = x }) (add pc.above) @
-                               List.map (fun x -> Cell { color = Blue;  left = cell_prev_col; above = x }) (add pc.above)
-    in add c
+let add_column (c: cell) : cell list =
+  let rec add (cell_prev_col: cell) : cell list = 
+    match cell_prev_col with
+    | Nil -> []
+    | Cell pc -> match pc.above with
+                  | Nil ->  [ Cell { color = Green; left = cell_prev_col; above = Nil };
+                              Cell { color = Blue;  left = cell_prev_col; above = Nil }]
+                  | Cell pca -> List.map (fun x -> Cell { color = Green; left = cell_prev_col; above = x }) (add (Cell pca)) @
+                                List.map (fun x -> Cell { color = Blue;  left = cell_prev_col; above = x }) (add (Cell pca))
+  in add c
+
+let add_row (c: cell) : cell list =
+  let rec add (cell_prev_row: cell) : cell list = 
+    match cell_prev_row with
+    | Nil -> []
+    | Cell pc -> match pc.left with
+                  | Nil ->  [ Cell { color = Green; left = Nil ; above = cell_prev_row };
+                              Cell { color = Blue;  left = Nil ; above = cell_prev_row }]
+                  | Cell pcb -> List.map (fun x -> Cell { color = Green; left = x ; above = cell_prev_row }) (add (Cell pcb)) @
+                                List.map (fun x -> Cell { color = Blue;  left = x ; above = cell_prev_row }) (add (Cell pcb))
+  in add c
+  
