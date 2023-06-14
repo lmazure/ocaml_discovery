@@ -73,9 +73,17 @@ let test5 = "add acceptable column" >::: [
   "G|B|B" >:: ( fun _ -> assert_equal [ "GG|BG|BG"; "GB|BG|BG"; "GG|BB|BG"; "GB|BB|BG"; "GG|BG|BB"; "GB|BG|BB" ] (List.map (fun x -> string_of_cell_hierarchy x) (add_acceptable_column (build_from_string "G|B|B"))) ~printer:string_of_string_list )
 ]  
 
+let test6 = "add acceptable row" >::: [
+  "G" >:: ( fun _ -> assert_equal [ "G|G"; "G|B"] (List.map (fun x -> string_of_cell_hierarchy x) (add_acceptable_row (build_from_string "G"))) ~printer:string_of_string_list );
+  "GB" >:: ( fun _ -> assert_equal [ "GB|GG"; "GB|BG"; "GB|GB"; "GB|BB" ] (List.map (fun x -> string_of_cell_hierarchy x) (add_acceptable_row (build_from_string "GB"))) ~printer:string_of_string_list );
+  "GGB" >:: ( fun _ -> assert_equal [ "GGB|BGG"; "GGB|GBG"; "GGB|BBG"; "GGB|BGB"; "GGB|GBB"; "GGB|BBB" ] (List.map (fun x -> string_of_cell_hierarchy x) (add_acceptable_row (build_from_string "GGB"))) ~printer:string_of_string_list );
+  "GBB" >:: ( fun _ -> assert_equal [ "GBB|GGG"; "GBB|BGG"; "GBB|GBG"; "GBB|BBG"; "GBB|GGB"; "GBB|BGB" ] (List.map (fun x -> string_of_cell_hierarchy x) (add_acceptable_row (build_from_string "GBB"))) ~printer:string_of_string_list )
+]  
+
 let _ = run_test_tt_main test0
 let _ = run_test_tt_main test1
 let _ = run_test_tt_main test2
 let _ = run_test_tt_main test3
 let _ = run_test_tt_main test4
 let _ = run_test_tt_main test5
+let _ = run_test_tt_main test6
