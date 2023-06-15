@@ -130,3 +130,8 @@ let add_acceptable_row (c: cell) : cell list =
                   | Cell pcb -> filter_map_list (fun x -> Cell { color = Green; left = x ; above = cell_prev_row }) (fun x -> (is_color_acceptable Green x pc.left cell_prev_row)) (add (Cell pcb)) @
                                 filter_map_list (fun x -> Cell { color = Blue;  left = x ; above = cell_prev_row }) (fun x -> (is_color_acceptable Blue x pc.left cell_prev_row)) (add (Cell pcb))
   in add c
+
+(* generate all the hierarchies that can be obtained by adding a column and a row which respect the color constraint *)
+let add_acceptable_column_and_row (c: cell): cell list =
+  List.concat (List.map (fun l -> add_acceptable_row l) (add_acceptable_column c))
+
