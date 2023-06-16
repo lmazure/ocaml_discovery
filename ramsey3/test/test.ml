@@ -61,10 +61,10 @@ let test3 = "add row" >::: [
 ]
 
 let test4 = "is color acceptable" >::: [
-  "GG|Gg" >:: ( fun _ -> assert_equal false (is_color_acceptable Green d21 d11 d12) );
-  "GG|Gb" >:: ( fun _ -> assert_equal true  (is_color_acceptable Blue  d21 d11 d12) );
-  "GGG|GBB|GBb" >:: ( fun _ -> assert_equal false (is_color_acceptable Green d32 d22 d23) );
-  "GGG|GBB|GBb" >:: ( fun _ -> assert_equal false (is_color_acceptable Blue  d32 d22 d23) )
+  "GG|GG" >:: ( fun _ -> assert_equal false (is_color_acceptable Green d21 d11 d12) );
+  "GG|GB" >:: ( fun _ -> assert_equal true  (is_color_acceptable Blue  d21 d11 d12) );
+  "GGG|GBB|GBB" >:: ( fun _ -> assert_equal false (is_color_acceptable Green d32 d22 d23) );
+  "GGG|GBB|GBB" >:: ( fun _ -> assert_equal false (is_color_acceptable Blue  d32 d22 d23) )
 ]
 
 let test5 = "add acceptable column" >::: [
