@@ -25,7 +25,7 @@ let char_to_color str =
 type cell = Cell of { color: color; left: cell; above: cell } | Nil
 
 
-let rec string_of_cell_hierarchy (c: cell) : string =
+let rec string_of_cell_hierarchy_with_separator (c: cell) (sep:string): string =
   let rec string_of_row (c: cell) : string =
     match c with
     | Nil -> ""
@@ -33,8 +33,14 @@ let rec string_of_cell_hierarchy (c: cell) : string =
   in
   match c with
   | Nil -> ""
-  | Cell x -> let p = (string_of_cell_hierarchy x.above) in
-                (if (p = "") then "" else (p ^ "|")) ^ (string_of_row c)
+  | Cell x -> let p = (string_of_cell_hierarchy_with_separator x.above sep) in
+                (if (p = "") then "" else (p ^ sep)) ^ (string_of_row c)
+
+let string_of_cell_hierarchy (c: cell) : string =
+  string_of_cell_hierarchy_with_separator c "|"
+
+let string_of_cell_hierarchy_multiline (c: cell) : string =
+  string_of_cell_hierarchy_with_separator c "\n"
 
 let rec is_color_acceptable (color: color) (left_cell: cell) (diag_cell: cell) (above_cell: cell) : bool =
   match left_cell with
@@ -133,5 +139,16 @@ let add_acceptable_row (c: cell) : cell list =
 
 (* generate all the hierarchies that can be obtained by adding a column and a row which respect the color constraint *)
 let add_acceptable_column_and_row (c: cell): cell list =
-  List.concat (List.map (fun l -> add_acceptable_row l) (add_acceptable_column c))
+  List.concat (List.map (fun x -> add_acceptable_row x) (add_acceptable_column c))
 
+let best_score = ref 0
+
+let rec recurse (c: cell) (depth: int) : unit =
+  if ( depth > !best_score ) then
+    begin
+      best_score := depth;
+      print_endline (string_of_int depth);
+      print_endline (string_of_cell_hierarchy_multiline c);
+      print_newline ()
+    end;
+  List.iter (fun (x: cell) -> (recurse x (depth + 1))) (add_acceptable_column_and_row c)

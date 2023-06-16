@@ -93,3 +93,5 @@ let _ = run_test_tt_main test4
 let _ = run_test_tt_main test5
 let _ = run_test_tt_main test6
 let _ = run_test_tt_main test7
+
+let _ = recurse (build_from_string "G") 1
