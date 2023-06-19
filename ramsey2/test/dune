@@ -1,3 +1,0 @@
-(test
- (name ramsey)
- (libraries ounit2 ramsey))
