@@ -26,4 +26,10 @@ let rec quick_sort l =
   else let current = divide {pivot = (List.hd l); smaller =  []; larger = []; remainder = (List.tl l)} in
     (quick_sort current.smaller) @ [ List.hd l] @ (quick_sort current.larger)
                                                   
-                                                  
+(* quick sort -- shorter version *)
+
+let rec  quick_sort_2 list =
+  match list with
+  | [] -> []
+  | h::t -> let (a,b) = List.partition (fun x -> x < h) t in
+      (quick_sort a) @ ( h :: quick_sort b)
