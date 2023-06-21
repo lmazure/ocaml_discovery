@@ -1,0 +1,2 @@
+(library
+ (name square_of_squares))
