@@ -18,7 +18,7 @@ let print_tree (n: node): unit =
 
 let print_flat_tree (n: node): unit =
   print_endline (string_of_list (list_of_tree n))
-  
+
 let rec insert_value_in_tree (v: int) (n: node): node =
   print_endline ("insert " ^ (string_of_int v) ^ " in tree " ^ (string_of_tree n));
   match n with

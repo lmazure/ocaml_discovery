@@ -24,7 +24,7 @@ let rec insert_value_in_tree (v: int) (tree: node): node =
   | Nil -> Node { left = Nil; value = v; right = Nil }
   | Node n -> if (v < n.value) then Node { left = (insert_value_in_tree v n.left); value = n.value; right = n.right }
                                else Node { left = n.left; value = n.value; right = (insert_value_in_tree v n.right) }
-  
+
 let rec insert_values_in_tree (l: int list) (tree: node): node =
   match l with
   | [] -> tree

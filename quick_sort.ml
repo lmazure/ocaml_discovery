@@ -1,8 +1,8 @@
-type current_division = { pivot: int; smaller: int list; larger: int list; remainder: int list } 
-                
+type current_division = { pivot: int; smaller: int list; larger: int list; remainder: int list }
+
 (* recursively split a list into two sub-lists according to a pivot
 the first sublist contains the number smaller than the pivot
-the second sublist contain the number larger than the pivot *)        
+the second sublist contain the number larger than the pivot *)
 let rec divide current =
   if (current.remainder = [])
   then { pivot = current.pivot;
@@ -17,15 +17,15 @@ let rec divide current =
   else divide { pivot = current.pivot;
                 smaller = List.hd current.remainder :: current.smaller;
                 larger = current.larger;
-                remainder = List.tl current.remainder } 
-                                                        
+                remainder = List.tl current.remainder }
+
 (* quick sort *)
 let rec quick_sort l =
   if (l = [])
   then []
   else let current = divide {pivot = (List.hd l); smaller =  []; larger = []; remainder = (List.tl l)} in
     (quick_sort current.smaller) @ [ List.hd l] @ (quick_sort current.larger)
-                                                  
+
 (* quick sort -- shorter version *)
 
 let rec  quick_sort_2 list =

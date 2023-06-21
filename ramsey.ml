@@ -1,10 +1,10 @@
 type color = Green | Blue;;
 
 (* a cell is defined by
-  - its colors  
+  - its colors
   - the list of colors at its left
   - the list of colors on the left-above diagonal
-  - the list of colors above 
+  - the list of colors above
 *)
 type cell = color * color list * color list * color list;;
 
@@ -41,10 +41,10 @@ let color_to_string color =
 let cell_to_string cell = match cell with
   | ( color, _, _, _) -> color_to_string color;;
 
-let display_line line = 
+let display_line line =
   List.iter ( fun x -> x |> cell_to_string |> print_string ) line;;
 
-let display column row = 
+let display column row =
   display_line column;
   print_string "|";
   display_line row;
@@ -73,13 +73,13 @@ let rec display_whole last_column last_row =
               display_whole t;
               h |> get_left_of_cell |> display_whole_color_row
             end;;
-  
-let build_new_cell color left_cell diag_cell above_cell = 
+
+let build_new_cell color left_cell diag_cell above_cell =
   (color,
    ((get_color_of_cell left_cell)::(get_left_of_cell left_cell)),
    ((get_color_of_cell diag_cell)::(get_diag_of_cell diag_cell)),
    ((get_color_of_cell above_cell)::(get_above_of_cell above_cell)));;
-  
+
 let rec add_column last_column last_row =
   (* print_newline();
      print_endline "add_column";
@@ -97,7 +97,7 @@ add_column_cell last_column_remainder last_row new_column =
   match last_column_remainder with
   | [] -> ( add_row [ (Green, [], [], []) ] last_row ;
             add_row [ (Blue,  [], [], []) ] last_row )
-  | [last] -> ( add_row ( (build_new_cell Green (List.hd last_row) last (List.hd new_column)) :: new_column ) last_row; 
+  | [last] -> ( add_row ( (build_new_cell Green (List.hd last_row) last (List.hd new_column)) :: new_column ) last_row;
                 add_row ( (build_new_cell Blue  (List.hd last_row) last (List.hd new_column)) :: new_column ) last_row  )
   | h::((i::t) as rest) -> ( add_column_cell rest last_row ( (build_new_cell Green i h (List.hd new_column)) :: new_column ) ;
                              add_column_cell rest last_row ( (build_new_cell Blue  i h (List.hd new_column)) :: new_column ) )

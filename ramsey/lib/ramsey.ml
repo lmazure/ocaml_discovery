@@ -1,5 +1,5 @@
 let explode_string (str: string) : char list =
-  let rec exp i l = 
+  let rec exp i l =
     if (i < 0) then (l) else (exp (i - 1) ( l @ [str.[i]]))
   in
     exp (String.length str - 1) []
@@ -18,7 +18,7 @@ let char_to_color str =
   | _ -> raise (Invalid_argument "Unknown color")
 
 (* a cell is defined by
-  - its colors  
+  - its colors
   - the left cell
   - the cell above
 *)
@@ -72,7 +72,7 @@ let build_from_string (s: string) : cell =
                     match r with
                     | Nil -> Cell { color = (char_to_color h); left = (accumulate t Nil); above = Nil }
                     | Cell c -> Cell { color = (char_to_color h); left = (accumulate t (c.left)); above = Cell c }
-                  end      
+                  end
       in accumulate l1 previous_row
   in
   let rec loop (l: string list) (c: cell) : cell =
@@ -91,7 +91,7 @@ let rec filter_map_list (m: 'a -> 'b) (f: 'a -> bool) (l: 'a list): 'b list =
 
 (* generate all the hierarchies that can be obtained by adding a column *)
 let add_column (c: cell) : cell list =
-  let rec add (cell_prev_col: cell) : cell list = 
+  let rec add (cell_prev_col: cell) : cell list =
     match cell_prev_col with
     | Nil -> []
     | Cell pc -> match pc.above with
@@ -103,7 +103,7 @@ let add_column (c: cell) : cell list =
 
 (* generate all the hierarchies that can be obtained by adding a row *)
 let add_row (c: cell) : cell list =
-  let rec add (cell_prev_row: cell) : cell list = 
+  let rec add (cell_prev_row: cell) : cell list =
     match cell_prev_row with
     | Nil -> []
     | Cell pc -> match pc.left with
@@ -115,7 +115,7 @@ let add_row (c: cell) : cell list =
 
 (* generate all the hierarchies that can be obtained by adding a column which respects the color constraint *)
 let add_acceptable_column (c: cell) : cell list =
-  let rec add (cell_prev_col: cell) : cell list = 
+  let rec add (cell_prev_col: cell) : cell list =
     match cell_prev_col with
     | Nil -> []
     | Cell pc -> match pc.above with
@@ -127,7 +127,7 @@ let add_acceptable_column (c: cell) : cell list =
 
 (* generate all the hierarchies that can be obtained by adding a row which respects the color constraint *)
 let add_acceptable_row (c: cell) : cell list =
-  let rec add (cell_prev_row: cell) : cell list = 
+  let rec add (cell_prev_row: cell) : cell list =
     match cell_prev_row with
     | Nil -> []
     | Cell pc -> match pc.left with

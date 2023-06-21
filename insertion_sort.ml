@@ -4,7 +4,7 @@ let rec insert_value_in_sorted_list value list =
   then [ value ]
   else if (value < List.hd list)
   then value :: list
-  else (List.hd list) :: (insert_value_in_sorted_list value (List.tl list)) 
+  else (List.hd list) :: (insert_value_in_sorted_list value (List.tl list))
 
 (* sort a list *)
 let rec sort_list list =
