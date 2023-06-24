@@ -11,15 +11,15 @@ let _ = run_test_tt_main test0
 let _ = Random.self_init ()
 
 let a = ref (
-  Random.int 999,
-  Random.int 999,
-  Random.int 999,
-  Random.int 999,
-  Random.int 999,
-  Random.int 999,
-  Random.int 999,
-  Random.int 999,
-  Random.int 999
+  Random.int 9999,
+  Random.int 9999,
+  Random.int 9999,
+  Random.int 9999,
+  Random.int 9999,
+  Random.int 9999,
+  Random.int 9999,
+  Random.int 9999,
+  Random.int 9999
 )
 
 let previous_score = ref Int.max_int
@@ -28,10 +28,10 @@ let current_score = ref (score !a)
 let _ =
   while (current_score < previous_score) do
     a := improve2 !a;
-    print_description !a;
     previous_score := !current_score;
     current_score := score !a;
-    print_endline (string_of_int !current_score);
-    print_newline ();
   done
-
+  
+let _ = print_description !a
+let _ = print_endline (string_of_int !current_score)
+let _ = print_newline ()

@@ -75,14 +75,14 @@ let print_description (sq: square) : unit =
   let (a ,b, c, d, e, f, g, h, i) = sq
   in let (l1, l2, l3, c1, c2, c3, d1, d2) = (a*a + b*b + c*c, d*d + e*e + f*f, g*g + h*h + i*i, a*a + d*d + g*g, b*b + e*e + h*h, c*c + f*f + i*i, a*a + e*e + i*i, c*c + e*e + g*g)
   in begin
-    print_endline ("line 1: " ^ (string_of_int l1));
-    print_endline ("line 2: " ^ (string_of_int l2));
-    print_endline ("line 3: " ^ (string_of_int l3));
+    print_endline ("line 1:   " ^ (string_of_int l1));
+    print_endline ("line 2:   " ^ (string_of_int l2));
+    print_endline ("line 3:   " ^ (string_of_int l3));
     print_endline ("column 1: " ^ (string_of_int c1));
     print_endline ("column 2: " ^ (string_of_int c2));
     print_endline ("column 3: " ^ (string_of_int c3));
-    print_endline ("diag 1: " ^ (string_of_int d1));
-    print_endline ("diag 2: " ^ (string_of_int d2));
+    print_endline ("diag 1:   " ^ (string_of_int d1));
+    print_endline ("diag 2:   " ^ (string_of_int d2));
     print_endline ("error: " ^ (let (min, max) = min_max_list [l1; l2; l3; c1; c2; c3; d1; d2]
                                 in ((string_of_int max) ^ " - " ^ (string_of_int min) ^ " = " ^ (string_of_int (max -min)))))
   end
