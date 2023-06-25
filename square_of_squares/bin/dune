@@ -1,4 +1,4 @@
 (executable
  (public_name square_of_squares)
- (name main)
+ (name square_of_squares)
  (libraries square_of_squares))
