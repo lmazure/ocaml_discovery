@@ -8,7 +8,7 @@ let test0 = "string from data" >::: [
 let _ = run_test_tt_main test0
 
 
-let _ = Random.self_init ()
+let _ = Random.init 1
 
 let a = ref (
   Random.int 9999,
