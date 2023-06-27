@@ -12,6 +12,18 @@ let rec min_max_list (list: int list) : int * int =
 
 type square = int * int * int * int * int * int * int * int * int 
 
+let is_valid_square (sq: square) : bool =
+  let (a ,b, c, d, e, f, g, h, i) = sq
+  in
+  a <> b && a <> c && a <> d && a <> e && a <> f && a <> g && a <> h && a <> i &&
+  b <> c && b <> d && b <> e && b <> f && b <> g && b <> h && b <> i &&
+  c <> d && c <> e && c <> f && c <> g && c <> h && c <> i &&
+  d <> e && d <> f && d <> g && d <> h && d <> i &&
+  e <> f && e <> g && e <> h && e <> i &&
+  f <> g && f <> h && f <> i &&
+  g <> h && g <> i &&
+  h <> i
+
 (* scale a square *)
 (*let scale_square (sq: square ) (factor: float) : square =
   let (a ,b, c, d, e, f, g, h, i) = sq
@@ -140,7 +152,7 @@ let previous_score = ref Int.max_int
 let _ = for seed = start to (start + 10000) do
   let (square, score) = launch seed in
   begin
-    if (score < !previous_score) then
+    if (is_valid_square square) && (score < !previous_score) then
       begin
         print_endline (string_of_int seed);
         print_description square;
