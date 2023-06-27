@@ -13,7 +13,7 @@ let rec min_max_list (list: int list) : int * int =
 type square = int * int * int * int * int * int * int * int * int 
 
 (* scale a square *)
-let scale_square (sq: square ) (factor: float) : square =
+(*let scale_square (sq: square ) (factor: float) : square =
   let (a ,b, c, d, e, f, g, h, i) = sq
   in (
     a |> Int.to_float|> (Float.mul factor) |> (Float.add 0.5) |> Int.of_float,
@@ -25,7 +25,7 @@ let scale_square (sq: square ) (factor: float) : square =
     g |> Int.to_float|> (Float.mul factor) |> (Float.add 0.5) |> Int.of_float,
     h |> Int.to_float|> (Float.mul factor) |> (Float.add 0.5) |> Int.of_float,
     i |> Int.to_float|> (Float.mul factor) |> (Float.add 0.5) |> Int.of_float
-  )
+  )*)
 
 (* print a square *)
 let print_square (sq: square) : unit =
@@ -111,51 +111,41 @@ let improve3_level_1 (sq: square) (funct: square -> int) : square * int =
   in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_2 (a-1, b, c, d, e, f, g, h, i) funct, improve3_level_2 (a, b, c, d, e, f, g, h, i) funct, improve3_level_2 (a+1, b, c, d, e, f, g, h, i) funct
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
-  let improve3 (sq: square) : square  =
-    let (b, _) = improve3_level_1 sq score
-    in b
-  
-let _ = Random.init (int_of_string Sys.argv.(1))
+let improve3 (sq: square) : square * int =
+    improve3_level_1 sq score
 
-let a = ref (
-  Random.int 9999,
-  Random.int 9999,
-  Random.int 9999,
-  Random.int 9999,
-  Random.int 9999,
-  Random.int 9999,
-  Random.int 9999,
-  Random.int 9999,
-  Random.int 9999
-)
-
-let _ = print_endline "--- optimize ---"
-let previous_score = ref Int.max_int
-let current_score = ref (score !a)
-let _ =
-  while (current_score < previous_score) do
-    a := improve3 !a;
+let optimize (sq: square) : square * int =
+  let a = ref sq
+  in let previous_score = ref Int.max_int
+  in let current_score = ref (score sq)
+  in while (current_score < previous_score) do
     previous_score := !current_score;
-    current_score := score !a;
-  done 
-let _ = print_description !a
-let _ = print_endline (string_of_int !current_score)
-let _ = print_newline ()
+    let (b, s) = improve3 !a in
+    begin
+      a := b;
+      current_score := s;
+    end
+  done;
+  ( !a, !current_score)
 
+let launch (seed: int) : square*int =
+  let _ = Random.init (seed)
+  in let a = ( Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999 )
+  in optimize a
 
-let _ = print_endline "--- scale ---"
-let _ = a := scale_square !a 1.1
-(* let _ = print_description !a *)
+let start = int_of_string Sys.argv.(1) 
 
-let _ = print_endline "--- optimize ---"
 let previous_score = ref Int.max_int
-let current_score = ref (score !a)
-let _ =
-  while (current_score < previous_score) do
-    a := improve3 !a;
-    previous_score := !current_score;
-    current_score := score !a;
-  done
-let _ = print_description !a
-let _ = print_endline (string_of_int !current_score)
-let _ = print_newline ()
+
+let _ = for seed = start to (start + 10000) do
+  let (square, score) = launch seed in
+  begin
+    if (score < !previous_score) then
+      begin
+        print_endline (string_of_int seed);
+        print_description square;
+        print_newline ();
+        previous_score := score
+      end
+  end
+done
