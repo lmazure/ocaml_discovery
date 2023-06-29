@@ -70,6 +70,12 @@ let score (sq: square) : int =
   in let dist x y z = square (3 * (x + y + z) - total)
   in (dist a2 b2 c2) + (dist d2 e2 f2) + (dist g2 h2 i2) + (dist a2 d2 g2) + (dist b2 e2 h2) + (dist c2 f2 i2) + (dist a2 e2 i2) + (dist c2 e2 g2)
 
+let score2 (sq: square) : int =
+  let (a ,b, c, d, e, f, g, h, i) = sq
+  in let (l1, l2, l3, c1, c2, c3, d1, d2) = (a*a + b*b + c*c, d*d + e*e + f*f, g*g + h*h + i*i, a*a + d*d + g*g, b*b + e*e + h*h, c*c + f*f + i*i, a*a + e*e + i*i, c*c + e*e + g*g)
+  in let (min, max) = min_max_list [l1; l2; l3; c1; c2; c3; d1; d2]
+  in max - min
+
 let improve3_select_best_of_3_squares (sq1: square) (s1: int) (sq2: square) (s2: int) (sq3: square) (s3: int) : square * int =
   if ((s1 < s2) && (s1 < s3))
   then (sq1, s1)
@@ -124,7 +130,7 @@ let improve3_level_1 (sq: square) (funct: square -> int) : square * int =
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
 let improve3 (sq: square) : square * int =
-    improve3_level_1 sq score
+    improve3_level_1 sq score2
 
 let optimize (sq: square) : square * int =
   let a = ref sq
@@ -142,7 +148,7 @@ let optimize (sq: square) : square * int =
 
 let launch (seed: int) : square*int =
   let _ = Random.init (seed)
-  in let a = ( Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999 )
+  in let a = ( Random.int 999, Random.int 999, Random.int 999, Random.int 999, Random.int 999, Random.int 999, Random.int 999, Random.int 999, Random.int 999 )
   in optimize a
 
 let start = int_of_string Sys.argv.(1) 
