@@ -148,14 +148,14 @@ let optimize (sq: square) : square * int =
 
 let launch (seed: int) : square*int =
   let _ = Random.init (seed)
-  in let a = ( Random.int 999, Random.int 999, Random.int 999, Random.int 999, Random.int 999, Random.int 999, Random.int 999, Random.int 999, Random.int 999 )
+  in let a = ( Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999, Random.int 9999 )
   in optimize a
 
-let start = int_of_string Sys.argv.(1) 
+let start = if (Array.length Sys.argv) != 2 then invalid_arg ("Syntax: " ^ Sys.argv.(0) ^ " <seed>"); int_of_string Sys.argv.(1)
 
 let previous_score = ref Int.max_int
 
-let _ = for seed = start to (start + 10000) do
+let _ = for seed = start to (start + 1000000) do
   let (square, score) = launch seed in
   begin
     if (is_valid_square square) && (score < !previous_score) then

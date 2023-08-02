@@ -2,5 +2,5 @@
 *.cmi
 *.cmo
 *.opam
-
+a.out
 _build/
