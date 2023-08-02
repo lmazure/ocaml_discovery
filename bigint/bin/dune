@@ -1,0 +1,4 @@
+(executable
+ (public_name bigint)
+ (name main)
+ (libraries zarith bigint))
