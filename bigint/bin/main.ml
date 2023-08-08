@@ -134,17 +134,18 @@ let optimize (sq: square) : square * Z.t =
   done;
   ( !a, !current_score)
 
+let max_range: int = 99
 let launch (seed: int) : square*Z.t =
   let _ = Random.init (seed)
-  in let a = ( 9999 |> Random.int |> Z.of_int,
-               9999 |> Random.int |> Z.of_int,
-               9999 |> Random.int |> Z.of_int,
-               9999 |> Random.int |> Z.of_int,
-               9999 |> Random.int |> Z.of_int,
-               9999 |> Random.int |> Z.of_int,
-               9999 |> Random.int |> Z.of_int,
-               9999 |> Random.int |> Z.of_int,
-               9999 |> Random.int |> Z.of_int 
+  in let a = ( max_range |> Random.int |> Z.of_int,
+               max_range |> Random.int |> Z.of_int,
+               max_range |> Random.int |> Z.of_int,
+               max_range |> Random.int |> Z.of_int,
+               max_range |> Random.int |> Z.of_int,
+               max_range |> Random.int |> Z.of_int,
+               max_range |> Random.int |> Z.of_int,
+               max_range |> Random.int |> Z.of_int,
+               max_range |> Random.int |> Z.of_int 
             )
   in optimize a
 
