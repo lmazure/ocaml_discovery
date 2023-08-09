@@ -1,5 +1,6 @@
 open Z
 
+(* return the minimum and maximum values of a list of values *)
 let rec min_max_list (list: Z.t list) : Z.t * Z.t =
   match list with
   | [] -> invalid_arg "empty list"
@@ -11,8 +12,10 @@ let rec min_max_list (list: Z.t list) : Z.t * Z.t =
                then (cmin, h)
                else (cmin, cmax)
 
+(* the type square*)
 type square = Z.t * Z.t * Z.t * Z.t * Z.t * Z.t * Z.t * Z.t * Z.t 
 
+(* test if a square is valid, i.e. all numbers are different *)
 let is_valid_square (sq: square) : bool =
   let (a ,b, c, d, e, f, g, h, i) = sq
   in
@@ -48,6 +51,21 @@ let print_description (sq: square) : unit =
                                 in ((Z.to_string max) ^ " - " ^ (Z.to_string min) ^ " = " ^ (Z.to_string (max -min)))))
   end
 
+(* generate a random square *)
+let random_square (max_value: int) (seed: int) : square =
+  let  _ = Random.init (seed)
+  in
+  ( max_value |> Random.int |> Z.of_int,
+    max_value |> Random.int |> Z.of_int,
+    max_value |> Random.int |> Z.of_int,
+    max_value |> Random.int |> Z.of_int,
+    max_value |> Random.int |> Z.of_int,
+    max_value |> Random.int |> Z.of_int,
+    max_value |> Random.int |> Z.of_int,
+    max_value |> Random.int |> Z.of_int,
+    max_value |> Random.int |> Z.of_int 
+  )
+(*
 let score (sq: square) : Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
   in let a2, b2, c2, d2, e2, f2, g2, h2, i2 = a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i
@@ -55,8 +73,9 @@ let score (sq: square) : Z.t =
   in let square x = x * x
   in let dist x y z = square ((Z.of_int 3) * (x + y + z) - total)
   in (dist a2 b2 c2) + (dist d2 e2 f2) + (dist g2 h2 i2) + (dist a2 d2 g2) + (dist b2 e2 h2) + (dist c2 f2 i2) + (dist a2 e2 i2) + (dist c2 e2 g2)
+*)
 
-let score2 (sq: square) : Z.t =
+let score (sq: square) : Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
   in let (l1, l2, l3, c1, c2, c3, d1, d2) = (a*a + b*b + c*c, d*d + e*e + f*f, g*g + h*h + i*i, a*a + d*d + g*g, b*b + e*e + h*h, c*c + f*f + i*i, a*a + e*e + i*i, c*c + e*e + g*g)
   in let (min, max) = min_max_list [l1; l2; l3; c1; c2; c3; d1; d2]
@@ -69,84 +88,80 @@ let improve3_select_best_of_3_squares (sq1: square) (s1: Z.t) (sq2: square) (s2:
   then (sq2, s2)
   else (sq3, s3)
 
-let improve3_level_9 (sq: square) (funct: square -> Z.t) : square * Z.t =
+let improve3_level_9 (sq: square) (incr: Z.t) (funct: square -> Z.t) : square * Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
-  in let sq1, sq2, sq3 = (a,b, c, d, e, f, g, h, Z.pred i), (a,b, c, d, e, f, g, h, i), (a,b, c, d, e, f, g, h, Z.succ i)
+  in let sq1, sq2, sq3 = (a,b, c, d, e, f, g, h, Z.add i incr), (a,b, c, d, e, f, g, h, i), (a,b, c, d, e, f, g, h, Z.sub i incr)
   in let s1, s2, s3 = funct sq1, funct sq2, funct sq3
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
-let improve3_level_8 (sq: square) (funct: square -> Z.t) : square * Z.t =
+let improve3_level_8 (sq: square) (incr: Z.t) (funct: square -> Z.t) : square * Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
-  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_9 (a, b, c, d, e, f, g, Z.pred h, i) funct, improve3_level_9 (a, b, c, d, e, f, g, h, i) funct, improve3_level_9 (a, b, c, d, e, f, g, Z.succ h, i) funct
+  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_9 (a, b, c, d, e, f, g, Z.add h incr, i) incr funct, improve3_level_9 (a, b, c, d, e, f, g, h, i) incr funct, improve3_level_9 (a, b, c, d, e, f, g, Z.sub h incr, i) incr funct
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
-let improve3_level_7 (sq: square) (funct: square -> Z.t) : square * Z.t =
+let improve3_level_7 (sq: square) (incr: Z.t) (funct: square -> Z.t) : square * Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
-  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_8 (a, b, c, d, e, f, Z.pred g, h, i) funct, improve3_level_8 (a, b, c, d, e, f, g, h, i) funct, improve3_level_8 (a, b, c, d, e, f, Z.succ g, h, i) funct
+  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_8 (a, b, c, d, e, f, Z.add g incr, h, i) incr funct, improve3_level_8 (a, b, c, d, e, f, g, h, i) incr funct, improve3_level_8 (a, b, c, d, e, f, Z.sub g incr, h, i) incr funct
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
-let improve3_level_6 (sq: square) (funct: square -> Z.t) : square * Z.t =
+let improve3_level_6 (sq: square) (incr: Z.t) (funct: square -> Z.t) : square * Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
-  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_7 (a, b, c, d, e, Z.pred f, g, h, i) funct, improve3_level_7 (a, b, c, d, e, f, g, h, i) funct, improve3_level_7 (a, b, c, d, e, Z.succ f, g, h, i) funct
+  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_7 (a, b, c, d, e, Z.add f incr, g, h, i) incr funct, improve3_level_7 (a, b, c, d, e, f, g, h, i) incr funct, improve3_level_7 (a, b, c, d, e, Z.sub f incr, g, h, i) incr funct
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
-let improve3_level_5 (sq: square) (funct: square -> Z.t) : square * Z.t =
+let improve3_level_5 (sq: square) (incr: Z.t) (funct: square -> Z.t) : square * Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
-  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_6 (a, b, c, d, Z.pred e, f, g, h, i) funct, improve3_level_6 (a, b, c, d, e, f, g, h, i) funct, improve3_level_6 (a, b, c, d, Z.succ e, f, g, h, i) funct
+  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_6 (a, b, c, d, Z.add e incr, f, g, h, i) incr funct, improve3_level_6 (a, b, c, d, e, f, g, h, i) incr funct, improve3_level_6 (a, b, c, d, Z.sub e incr, f, g, h, i) incr funct
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
-let improve3_level_4 (sq: square) (funct: square -> Z.t) : square * Z.t =
+let improve3_level_4 (sq: square) (incr: Z.t) (funct: square -> Z.t) : square * Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
-  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_5 (a, b, c, Z.pred d, e, f, g, h, i) funct, improve3_level_5 (a, b, c, d, e, f, g, h, i) funct, improve3_level_5 (a, b, c, Z.succ d, e, f, g, h, i) funct
+  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_5 (a, b, c, Z.add d incr, e, f, g, h, i) incr funct, improve3_level_5 (a, b, c, d, e, f, g, h, i) incr funct, improve3_level_5 (a, b, c, Z.sub d incr, e, f, g, h, i) incr funct
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
-let improve3_level_3 (sq: square) (funct: square -> Z.t) : square * Z.t =
+let improve3_level_3 (sq: square) (incr: Z.t) (funct: square -> Z.t) : square * Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
-  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_4 (a, b, Z.pred c, d, e, f, g, h, i) funct, improve3_level_4 (a, b, c, d, e, f, g, h, i) funct, improve3_level_4 (a, b, Z.succ c, d, e, f, g, h, i) funct
+  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_4 (a, b, Z.add c incr, d, e, f, g, h, i) incr funct, improve3_level_4 (a, b, c, d, e, f, g, h, i) incr funct, improve3_level_4 (a, b, Z.sub c incr, d, e, f, g, h, i) incr funct
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
-let improve3_level_2 (sq: square) (funct: square -> Z.t) : square * Z.t =
+let improve3_level_2 (sq: square) (incr: Z.t) (funct: square -> Z.t) : square * Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
-  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_3 (a, Z.pred b, c, d, e, f, g, h, i) funct, improve3_level_3 (a, b, c, d, e, f, g, h, i) funct, improve3_level_3 (a, Z.succ b, c, d, e, f, g, h, i) funct
+  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_3 (a, Z.add b incr, c, d, e, f, g, h, i) incr funct, improve3_level_3 (a, b, c, d, e, f, g, h, i) incr funct, improve3_level_3 (a, Z.sub b incr, c, d, e, f, g, h, i) incr funct
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
-let improve3_level_1 (sq: square) (funct: square -> Z.t) : square * Z.t =
+let improve3_level_1 (sq: square) (incr: Z.t) (funct: square -> Z.t) : square * Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
-  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_2 (Z.pred a, b, c, d, e, f, g, h, i) funct, improve3_level_2 (a, b, c, d, e, f, g, h, i) funct, improve3_level_2 (Z.succ a, b, c, d, e, f, g, h, i) funct
+  in let (sq1, s1), (sq2, s2), (sq3, s3) = improve3_level_2 (Z.add a incr, b, c, d, e, f, g, h, i) incr funct, improve3_level_2 (a, b, c, d, e, f, g, h, i) incr funct, improve3_level_2 (Z.sub a incr, b, c, d, e, f, g, h, i) incr funct
   in improve3_select_best_of_3_squares sq1 s1 sq2 s2 sq3 s3
 
-let improve3 (sq: square) : square * Z.t =
-    improve3_level_1 sq score2
+let improve3 (sq: square) (incr: Z.t): square * Z.t =
+    improve3_level_1 sq incr score
 
-let max_score : Z.t = Z.of_string "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+(* maximum value of the random numbers *)
+let max_range: int = 999999
+let max_score : Z.t = (Z.of_int max_range)  * (Z.of_int max_range)  * (Z.of_int 9)
 
 let optimize (sq: square) : square * Z.t =
   let a = ref sq
+  in let incr : Z.t ref = ref (shift_right (Z.of_int max_range) 10)
   in let previous_score : Z.t ref = ref max_score
   in let current_score : Z.t ref  = ref (score sq)
-  in while (current_score < previous_score) do
-    previous_score := !current_score;
-    let (b, s) = improve3 !a in
-    begin
-      a := b;
-      current_score := s;
-    end
+  in while (!incr != Z.zero) do
+    while (current_score < previous_score) do
+      previous_score := !current_score;
+      let (b, s) = improve3 !a !incr in
+      begin
+        a := b;
+        current_score := s;
+      end
+    done;
+    incr := Z.shift_right !incr 1
   done;
   ( !a, !current_score)
 
-let max_range: int = 99
+
 let launch (seed: int) : square*Z.t =
-  let _ = Random.init (seed)
-  in let a = ( max_range |> Random.int |> Z.of_int,
-               max_range |> Random.int |> Z.of_int,
-               max_range |> Random.int |> Z.of_int,
-               max_range |> Random.int |> Z.of_int,
-               max_range |> Random.int |> Z.of_int,
-               max_range |> Random.int |> Z.of_int,
-               max_range |> Random.int |> Z.of_int,
-               max_range |> Random.int |> Z.of_int,
-               max_range |> Random.int |> Z.of_int 
-            )
+  let a = random_square max_range seed
   in optimize a
 
 let start : int = if (Array.length Sys.argv) != 2 then invalid_arg ("Syntax: " ^ Sys.argv.(0) ^ " <seed>"); int_of_string Sys.argv.(1)
