@@ -9,7 +9,6 @@ If ((a,b,c) is a Pythogorian triplet, then we have a magic square of squares:
 
 # First try
 
-##
 Looking on trying [-1, 0, 1] on all dimensions and picking the best option among the 3^9 ones.  
 Then repeating this until no better solution is found.  
 If the found optimum has repeated numbers, it is rejected.  

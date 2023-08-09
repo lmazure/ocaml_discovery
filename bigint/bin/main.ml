@@ -65,15 +65,6 @@ let random_square (max_value: int) (seed: int) : square =
     max_value |> Random.int |> Z.of_int,
     max_value |> Random.int |> Z.of_int 
   )
-(*
-let score (sq: square) : Z.t =
-  let (a ,b, c, d, e, f, g, h, i) = sq
-  in let a2, b2, c2, d2, e2, f2, g2, h2, i2 = a * a, b * b, c * c, d * d, e * e, f * f, g * g, h * h, i * i
-  in let total = a2 + b2 + c2 + d2 + e2 + f2 + g2 + h2 + i2
-  in let square x = x * x
-  in let dist x y z = square ((Z.of_int 3) * (x + y + z) - total)
-  in (dist a2 b2 c2) + (dist d2 e2 f2) + (dist g2 h2 i2) + (dist a2 d2 g2) + (dist b2 e2 h2) + (dist c2 f2 i2) + (dist a2 e2 i2) + (dist c2 e2 g2)
-*)
 
 let score (sq: square) : Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
@@ -85,8 +76,8 @@ let improve3_select_best_of_3_squares (sq1: square) (s1: Z.t) (sq2: square) (s2:
   if ((s1 < s2) && (s1 < s3))
   then (sq1, s1)
   else if (s2 < s3)
-  then (sq2, s2)
-  else (sq3, s3)
+       then (sq2, s2)
+       else (sq3, s3)
 
 let improve3_level_9 (sq: square) (incr: Z.t) (funct: square -> Z.t) : square * Z.t =
   let (a ,b, c, d, e, f, g, h, i) = sq
@@ -139,7 +130,7 @@ let improve3 (sq: square) (incr: Z.t): square * Z.t =
 
 (* maximum value of the random numbers *)
 let max_range: int = 999999
-let max_score : Z.t = (Z.of_int max_range)  * (Z.of_int max_range)  * (Z.of_int 9)
+let max_score : Z.t = (Z.of_int max_range) * (Z.of_int max_range) * (Z.of_int 9)
 
 let optimize (sq: square) : square * Z.t =
   let a = ref sq
@@ -160,7 +151,7 @@ let optimize (sq: square) : square * Z.t =
   ( !a, !current_score)
 
 
-let launch (seed: int) : square*Z.t =
+let launch (seed: int) : square * Z.t =
   let a = random_square max_range seed
   in optimize a
 
